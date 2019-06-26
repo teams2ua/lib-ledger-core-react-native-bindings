@@ -8,11 +8,11 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
-
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.ubinder.Ubinder;
 
-import java.util.ArrayList;
+import android.util.Base64;
+
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -62,21 +62,23 @@ public class RCTUbinder extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void SendRequest(String reqId, ReadableArray data)
+    public void SendRequest(String reqId, String data)
     {
-
-        _ubinder.SendRequest(Long.parseLong(reqId), data.toArrayList());
+        byte[] decodedData = Base64.decode(data, Base64.DEFAULT);
+        _ubinder.SendRequest(Long.parseLong(reqId), decodedData);
     }
 
     @ReactMethod
-    public void SendResponse(String reqId, ReadableArray data)
+    public void SendResponse(String reqId, String data)
     {
-
+        byte[] decodedData = Base64.decode(data, Base64.DEFAULT);
+        _ubinder.SendResponse(Long.parseLong(reqId), decodedData);
     }
 
     @ReactMethod
-    public void SendNotification(ReadableArray data)
+    public void SendNotification(String data)
     {
-
+        byte[] decodedData = Base64.decode(data, Base64.DEFAULT);
+        _ubinder.SendNotification(decodedData);
     }
 }

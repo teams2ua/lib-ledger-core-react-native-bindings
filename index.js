@@ -1,5 +1,5 @@
 import { NativeModules } from "react-native";
 
-const { RCTCoreLibLedgerCore } = NativeModules;
+const { RCTUbinder } = NativeModules;
 
-export default RCTCoreLibLedgerCore;
+export default RCTUbinder;
