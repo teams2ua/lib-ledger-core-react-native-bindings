@@ -11,27 +11,27 @@ public class Ubinder {
         ubinderInit();
     }
 
-    public native void SendRequest(long req, byte[] arr);
-    public native void SendResponse(long req, byte[] arr);
+    public native void SendRequest(int req, byte[] arr);
+    public native void SendResponse(int req, byte[] arr);
     public native void SendNotification(byte[] arr);
 
-    public void OnRequest(long req, byte[] arr) {
+    public void OnRequest(int req, byte[] arr) {
          _onRequest.accept(req, arr);
     }
 
-    public void OnResponse(long req, byte[] arr) {
+    public void OnResponse(int req, byte[] arr) {
          _onResponse.accept(req, arr);
     }
 
     public void OnNotification(byte[] arr) { _onNotification.accept(arr); }
 
-    public Ubinder(BiConsumer<Long, byte[]> onRequest, BiConsumer<Long, byte[]> onResponse, Consumer<byte[]> onNotification) {
+    public Ubinder(BiConsumer<Integer, byte[]> onRequest, BiConsumer<Integer, byte[]> onResponse, Consumer<byte[]> onNotification) {
         _onRequest = onRequest;
         _onResponse = onResponse;
         _onNotification = onNotification;
     }
  
-    private BiConsumer<Long, byte[]> _onRequest;
-    private BiConsumer<Long, byte[]> _onResponse;
+    private BiConsumer<Integer, byte[]> _onRequest;
+    private BiConsumer<Integer, byte[]> _onResponse;
     private Consumer<byte[]> _onNotification;
 }

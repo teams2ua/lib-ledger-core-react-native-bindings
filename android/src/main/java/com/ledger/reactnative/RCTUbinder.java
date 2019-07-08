@@ -19,23 +19,30 @@ import java.util.function.Consumer;
 
 public class RCTUbinder extends ReactContextBaseJavaModule {
 
+    // JNI class that represent binding
     private Ubinder _ubinder;
 
+    // There are limitation in React Native <-> Native Module communication
+    // binary type is not supported, so we work with base64
     public RCTUbinder(ReactApplicationContext reactContext)
     {
         super(reactContext);
         _ubinder = new Ubinder(
-                new BiConsumer<Long, byte[]>() {
+                new BiConsumer<Integer, byte[]>() {
                     @Override
-                    public void accept(final Long req, byte[] arr) {
+                    public void accept(final Integer req, byte[] arr) {
                         WritableMap params = Arguments.createMap();
+                        params.putInt("requestId", req);
+                        params.putString("data", Base64.encodeToString(arr, Base64.DEFAULT));
                         sendEvent("onRequest", params);
                     }
                 },
-                new BiConsumer<Long, byte[]>() {
+                new BiConsumer<Integer, byte[]>() {
                     @Override
-                    public void accept(final Long req, byte[] arr) {
+                    public void accept(final Integer req, byte[] arr) {
                         WritableMap params = Arguments.createMap();
+                        params.putInt("requestId", req);
+                        params.putString("data", Base64.encodeToString(arr, Base64.DEFAULT));
                         sendEvent("onResponse", params);
                     }
                 },
@@ -43,6 +50,7 @@ public class RCTUbinder extends ReactContextBaseJavaModule {
                     @Override
                     public void accept(byte[] arr) {
                         WritableMap params = Arguments.createMap();
+                        params.putString("data", Base64.encodeToString(arr, Base64.DEFAULT));
                         sendEvent("onNotification", params);
                     }
                 });
@@ -62,17 +70,17 @@ public class RCTUbinder extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void SendRequest(String reqId, String data)
+    public void SendRequest(Integer reqId, String data)
     {
         byte[] decodedData = Base64.decode(data, Base64.DEFAULT);
-        _ubinder.SendRequest(Long.parseLong(reqId), decodedData);
+        _ubinder.SendRequest(reqId, decodedData);
     }
 
     @ReactMethod
-    public void SendResponse(String reqId, String data)
+    public void SendResponse(Integer reqId, String data)
     {
         byte[] decodedData = Base64.decode(data, Base64.DEFAULT);
-        _ubinder.SendResponse(Long.parseLong(reqId), decodedData);
+        _ubinder.SendResponse(reqId, decodedData);
     }
 
     @ReactMethod
